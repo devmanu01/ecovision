@@ -1,0 +1,4 @@
+﻿src/prisma/seed.ts(80,18): error TS6133: 'congo' is declared but its value is never read.
+src/prisma/seed.ts(80,25): error TS6133: 'borneo' is declared but its value is never read.
+src/prisma/seed.ts(80,44): error TS6133: 'alps' is declared but its value is never read.
+src/prisma/seed.ts(80,50): error TS6133: 'andes' is declared but its value is never read.
