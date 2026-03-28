@@ -28,20 +28,38 @@ export function useChat() {
     setIsTyping(true);
 
     try {
-      const { data } = await api.post('/api/chat', { query });
-      setMessages((prev) => [...prev, { content: data, type: 'bot' }]);
+      // Log outgoing request for debugging
+      console.log('Sending message:', query);
+
+      const { data } = await api.post('/api/chat', { message: query });
+
+      // Handle both structured { details: ... } and simple { reply: ... } responses
+      if (data && data.reply) {
+        setMessages((prev) => [...prev, { content: data.reply, type: 'bot' }]);
+      } else if (data && data.details) {
+        setMessages((prev) => [...prev, { content: data, type: 'bot' }]);
+      } else {
+        throw new Error('Invalid response format');
+      }
+
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          content: {
-            details: 'Sorry, I encountered an error. Please try again.',
-            sources: [],
-            solutions: { government: [], community: [], individual: [] },
-          },
-          type: 'bot',
-        },
-      ]);
+      // Log error details for debugging
+      const errorData = err instanceof Error ? err.message : err;
+      console.error('API error:', errorData);
+
+      // Check if the backend returned a fallback response
+      const serverData = (err as any)?.response?.data;
+      if (serverData?.reply) {
+        console.log('Using server fallback response text');
+        setMessages((prev) => [...prev, { content: serverData.reply, type: 'bot' }]);
+      } else if (serverData?.details) {
+        console.log('Using server structured fallback response');
+        setMessages((prev) => [...prev, { content: serverData as ChatResponse, type: 'bot' }]);
+      } else {
+        // Show client-side fallback response without crashing
+        const fallbackText = 'Sorry, I encountered an error. Please try again.';
+        setMessages((prev) => [...prev, { content: fallbackText, type: 'bot' }]);
+      }
     } finally {
       setIsTyping(false);
     }
