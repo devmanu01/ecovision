@@ -22,6 +22,9 @@ app.use('/api/chat', chatRouter);
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
+app.get("/", (req, res) => {
+  res.send("EcoVision Backend is Running 🚀");
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
