@@ -1,77 +1,105 @@
-# 🌱 EcoVision (Eco-Visualizer)
+# � EcoVision (Eco-Visualizer)
 
-EcoVision is a full-stack Environmental Dashboard and Prediction application. It provides users with dynamic visualizations, data-driven predictions, interactive geographical maps, and AI-powered insights concerning environmental trends, regions, and viable solutions.
+EcoVision is a full-stack Environmental Dashboard and Prediction application. It provides users with dynamic visualizations, data-driven predictions, interactive geographical maps, and deep AI-powered insights concerning global environmental trends, specific regional impacts, and viable actionable solutions.
 
----
-
-## 🏗️ System Architecture
-
-The application is split into two main parts: a **Frontend (Client)** and a **Backend (API)**. They run on separate servers but communicate with each other seamlessly.
-
-1. **Frontend (Next.js - Port 3000):** The user interface where data is displayed through beautiful charts, maps, and interactive chat.
-2. **Backend (Express.js - Port 5000):** The brain of the application. It processes requests, interacts with the database to fetch or save prediction/region data, and talks to Google's Gemini AI.
-3. **Database (MySQL):** The persistent storage layer where all the structured data lives.
+The project aims to visualize the tangible impacts of climate change across critical domains: **Forests**, **Glaciers**, **Water Resources**, and **Pollution**.
 
 ---
 
-## 🛠️ Technology Stack & Concepts
+## 🤖 AI Integration & Capabilities
 
-### Frontend Technologies
-* **Next.js & React:** Next.js is a React framework that allows us to build fast, SEO-friendly, and highly interactive user interfaces. It handles all our routing (like navigating from Home to Search).
-* **TypeScript:** A strict syntactical superset of JavaScript that adds static typing. It helps catch errors before the code is even run and ensures the data we get from the backend matches what we expect on the frontend.
-* **Tailwind CSS:** A utility-first CSS framework for rapidly styling the application directly inside our components without writing custom CSS files.
-* **Chart.js & React-Chartjs-2:** Used for rendering powerful data visualizations (like line charts for temperature changes or bar charts for emissions).
-* **Leaflet:** An open-source JavaScript library for mobile-friendly interactive maps. It helps visualize regions on an actual map.
-* **Mermaid:** A diagramming and charting tool that renders markdown-inspired text definitions to create complex diagrams dynamically.
+At the heart of EcoVision lies its AI Engine, powered by the **Google Generative AI (Gemini) SDK**. The AI is deeply integrated into the backend (`@google/generative-ai`) and exposed to the user through several key features:
 
-### Backend Technologies
-* **Express.js (Node.js):** A fast, unopinionated web framework for Node.js. It acts as our API server, defining routes (endpoints) like `/api/regions` or `/api/chat`.
-* **TypeScript:** Configured with `ts-node-dev` so our backend is completely type-safe.
-* **Google Generative AI (Gemini):** Integrated into the backend to power the chat feature, allowing users to ask complex questions about environmental solutions and receive intelligent, AI-generated responses.
-
-### Database Layer
-* **MySQL:** A robust relational database management system where tables for Regions, Predictions, and Solutions are stored.
-* **Prisma (ORM):** 
-  * *What is it?* Prisma is a next-generation Object-Relational Mapper (ORM). Instead of writing complex raw SQL queries (like `SELECT * FROM users WHERE...`), Prisma lets us interact with our MySQL database using clean, readable TypeScript code.
-  * *What does it do?* First, we define our database schema in a `schema.prisma` file. Prisma reads this file and automatically generates strict TypeScript types and the exact SQL commands needed to build (`prisma migrate`) and talk to the database (`prisma generate`). It handles all the heavy lifting of keeping the app and the database in perfect sync.
+1. **Intelligent Chatbot Panel:** Available globally across the app via `<ChatbotPanel />`, users can converse naturally about environmental changes, ask for region-specific advice, or request deep explanations of phenomena (e.g., "How does deforestation in the Amazon affect global temperatures?").
+2. **Predictive Analysis:** The AI assists in processing historical environmental data and generating narrative predictions (`predictions.controller.ts`) about future climate scenarios.
+3. **Automated Solutions:** The system generates context-aware, actionable solutions (`solutions.controller.ts`) for specific regions, converting raw data into understandable mitigation strategies.
 
 ---
 
-## 🔄 How the Frontend and Backend Work Together
+## 🏗️ System Architecture & Project Structure
 
-Here is the typical flow of data in EcoVision:
+The repository is structured as a monorepo containing a **Frontend (Client)** and a **Backend (API)**.
 
-1. **User Interaction:** A user visits `http://localhost:3000` and clicks on a specific environmental region.
-2. **API Request:** The Next.js frontend sends an HTTP `GET` request (using `fetch` or `axios`) to the backend API at `http://localhost:5000/api/regions/1`.
-3. **Backend Processing:** Express.js receives the request at the `/api/regions/:id` route. 
-4. **Database Query (Prisma):** The Express controller uses Prisma to securely query the MySQL database (e.g., `prisma.region.findUnique({ id: 1 })`).
-5. **JSON Response:** Prisma hands the precise data back to Express, which then sends a JSON payload back to the frontend.
-6. **Visualization:** The React component receives the JSON data, updates its state, and dynamically renders the geographical map (Leaflet) and the temperature prediction charts (Chart.js) for the user to see.
-
----
-
-## 🚀 Running the Project
-
-For an effortless developer experience, the project is configured to run both the frontend and backend simultaneously from the root directory.
-
-### Prerequisites 
-- Node.js installed
-- A local MySQL connection (User: `root`, Password: `password`)
-- Database created: `CREATE DATABASE environmental_prediction;`
-
-### Start Command
-Simply open your terminal, navigate to the `ecovision` root folder, and run:
-
-```bash
-# Installs dependencies for the root, frontend, and backend packages
-npm run install:all
-
-# Boot up the database schema and add initial seed data
-npm run dev:backend # (in a separate tab, temporarily to run Prisma migrations: \`npx prisma migrate dev\` then \`npx prisma seed\`)
-
-# Start BOTH the Next.js Frontend and Express Backend concurrently
-npm run dev
+```text
+ecovision/
+ ├── backend/               # Node.js / Express API
+ │    ├── prisma/           # Database schema & seeding (schema.prisma, seed.ts)
+ │    └── src/
+ │         ├── controllers/ # chat, predictions, regions, solutions logic (AI & DB queries)
+ │         ├── routes/      # Express API route definitions
+ │         └── index.ts     # Express server entry point
+ │
+ └── frontend/              # Next.js Application
+      ├── app/              # App Router pages (forests, glaciers, pollution, search, water, solutions)
+      ├── components/       # Reusable UI (Charts, Chatbot, Maps, Layouts)
+      ├── hooks/            # React Query-style data fetching hooks (useChat, usePredictions)
+      └── lib/              # Core API configuration (api.ts using Axios)
 ```
 
-* Frontend runs on `http://localhost:3000`
-* Backend runs on `http://localhost:5000`
+---
+
+## 🛠️ Technology Stack
+
+### Frontend (User Interface)
+* **Next.js 15 (App Router) & React 19:** Provides a fast, SEO-friendly, and highly interactive user interface with server-side rendering capabilities.
+* **TypeScript:** Ensures strict typing and reliable data flow from the API to the UI.
+* **Tailwind CSS:** For rapid, responsive, utility-first styling.
+* **Data Visualization (Chart.js & React-Chartjs-2):** Used for rendering powerful predictive data visualizations (e.g., `<PredictionChart />`).
+* **Interactive Mapping (Leaflet):** An open-source JavaScript library handling the global `<WorldMap />` component to visualize regional impacts interactively.
+* **Mermaid:** Renders complex markdown-inspired text definitions into dynamic methodology diagrams (`<Methodology />` page).
+
+### Backend (API Server)
+* **Express.js (Node.js):** A fast, structural web framework acting as our REST API, routing requests to controllers.
+* **TypeScript:** Configured with `ts-node-dev` for a completely type-safe backend developer experience.
+* **Google Generative AI SDK:** Integrates Gemini directly into the server to handle AI prompts, chat history, and solution generation securely.
+* **Express Async Handler:** Streamlines error handling in asynchronous route controllers.
+
+### Database Layer
+* **Database:** A robust relational database (configured via Prisma).
+* **Prisma (ORM):** 
+  * Prisma handles all database interactions using clean, readable TypeScript methods. It reads the `schema.prisma` file, generates strict TypeScript types, and manages migrations automatically.
+
+---
+
+## 🔄 Data Flow
+
+1. **User Interaction:** A user visits a specialized dashboard (e.g., `http://localhost:3000/glaciers`) or interacts with the Chatbot.
+2. **API Request:** The custom frontend hooks (e.g., `usePredictions.ts`, `useChat.ts`) send an HTTP request via Axios to the standard backend API (`http://localhost:5000/api/...`).
+3. **Backend Processing:** Express routes the request to the correct controller.
+4. **AI & Database Query:** The controller either fetches structured data securely via Prisma or constructs a prompt to query the Google Gemini AI model.
+5. **Response & Visualization:** The JSON payload is returned to the frontend, where React state is updated, dynamically rendering geographical maps (`Leaflet`), predictive charts (`Chart.js`), or streaming AI responses directly to the user.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites 
+- Node.js (v18+ recommended)
+- A local SQL/Relational Database instance
+- A Google Gemini API Key
+
+### 1. Environment Configuration
+Create a `.env` file in the `backend` directory:
+```env
+PORT=5000
+DATABASE_URL="your_database_url_here"
+GEMINI_API_KEY="your_google_gemini_api_key_here"
+```
+
+### 2. Backend Setup
+```bash
+cd backend
+npm install
+npm run prisma:generate
+npm run prisma:migrate
+npm run prisma:seed      # Seeds initial region and mock prediction data
+npm run dev              # Starts the Express server
+```
+
+### 3. Frontend Setup
+In a new terminal:
+```bash
+cd frontend
+npm install
+npm run dev              # Starts the Next.js application on localhost:3000
+```
