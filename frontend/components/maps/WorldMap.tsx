@@ -87,7 +87,7 @@ export default function WorldMap({
     <div
       ref={containerRef}
       id={id}
-      style={{ width: '100%', height, minHeight: '300px', borderRadius: '8px' }}
+      style={{ width: '100%', height: height, minHeight: '300px', borderRadius: '8px' }}
     />
   );
 }

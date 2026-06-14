@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Sidebar />
           <div className="main-content">
             <Header />
-            <main style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)' }}>
+            <main className="page-content">
               {children}
             </main>
           </div>
